@@ -14,12 +14,12 @@
     /* Includes */
 
     /* Function prototypes */
-        void hal_hasWallLeft();
-        void hal_hasWallRight();
-        void hal_hasWallFront();
-        void hal_turnLeft();
-        void hal_turnRight();
-        void hal_moveForward();
-        void hal_init();
+        uint8_t hal_hasWallLeft(void);
+        uint8_t hal_hasWallRight(void);
+        uint8_t hal_hasWallFront(void);
+        void hal_turnLeft(void);
+        void hal_turnRight(void);
+        void hal_moveForward(void);
+        void hal_init(void);
 
 #endif
