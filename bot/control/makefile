@@ -52,6 +52,12 @@ SRC = $(TARGET).c
 # DO NOT EDIT THIS!
 
 
+# Other source files
+SRC += hal.c
+SRC += pathfinder.c
+SRC += ir.c
+
+
 ###############################################################################
 # If there is more than one source file, append them here separated by spaces.
 # Usually you have to add the Library files here! (ONLY add c files "*.c" here,
