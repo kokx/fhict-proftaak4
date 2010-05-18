@@ -13,7 +13,7 @@
 								// Always needs to be included!
 
 #include "RP6I2CmasterTWI.h"	// I2C Master Library
-#include "RP6Control_I2CMasterLib.h"
+#include "RP6I2CMasterLibExt.h"
 
 /*****************************************************************************/
 

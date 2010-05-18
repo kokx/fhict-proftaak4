@@ -14,7 +14,7 @@
 
 // stuff for the Two-Wire-Interface (I2C)
 #include "RP6I2CmasterTWI.h"
-#include "RP6Control_I2CMasterLib.h"
+#include "RP6I2CMasterLibExt.h"
 
 // other files for this project
 #include "hal.h"

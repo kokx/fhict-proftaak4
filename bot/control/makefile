@@ -51,8 +51,6 @@ RP6_LIB_PATH_OTHERS= $(RP6_LIB_PATH)/RP6control $(RP6_LIB_PATH)/RP6common
 SRC = $(TARGET).c
 # DO NOT EDIT THIS!
 
-# lib file for the HAL
-SRC += RP6Control_I2CMasterLib.c
 
 # Other source files
 SRC += hal.c
@@ -65,11 +63,14 @@ SRC += ir.c
 # Usually you have to add the Library files here! (ONLY add c files "*.c" here,
 # NO header files "*.h"!)
 # Don't forget to add relative paths!
-
+#
 SRC += $(RP6_LIB_PATH)/RP6control/RP6ControlLib.c
 SRC += $(RP6_LIB_PATH)/RP6common/RP6uart.c
 #SRC += $(RP6_LIB_PATH)/RP6common/RP6I2CslaveTWI.c
 SRC += $(RP6_LIB_PATH)/RP6common/RP6I2CmasterTWI.c
+
+# lib file for the HAL
+SRC += $(RP6_LIB_PATH)/RP6control/RP6I2CMasterLibExt.c
 
 # You can also wrap lines by appending a backslash to the end of the line
 # like this:
