@@ -1,4 +1,4 @@
-/* 
+/*
  * ****************************************************************************
  * RP6 ROBOT SYSTEM - RP6 CONTROL M32 Examples
  * ****************************************************************************
@@ -9,22 +9,26 @@
 /*****************************************************************************/
 // Includes:
 
-#include "RP6ControlLib.h" 		// The RP6 Control Library. 
+#include "RP6ControlLib.h" 		// The RP6 Control Library.
 								// Always needs to be included!
 
+// stuff for the Two-Wire-Interface (I2C)
 #include "RP6I2CmasterTWI.h"
+#include "RP6Control_I2CMasterLib.h"
+
+// other files for this project
+#include "hal.h"
+#include "ir.h"
+#include "pathfinder.h"
 
 /*****************************************************************************/
 
-#define I2C_RP6_COMPASS 0x42    // compass address
-
-/*****************************************************************************/
 // I2C Error handler
 
 /**
  * This function gets called automatically if there was an I2C Error like
  * the slave sent a "not acknowledge" (NACK, error codes e.g. 0x20 or 0x30).
- * The most common mistakes are: 
+ * The most common mistakes are:
  *   - using the wrong address for the slave
  *   - slave not active or not connected to the I2C-Bus
  *   - too fast requests for a slower slave
@@ -37,26 +41,32 @@ void I2C_transmissionError(uint8_t errorState)
 	writeChar('\n');
 }
 
-
-// Main function - The program starts here:
-
-int main(void)
+/**
+ * The I2C_requestedDataReady Event Handler
+ */
+void I2C_requestedDataReady(uint8_t dataRequestID)
 {
-	initRP6Control(); // Always call this first! The Processor will not work
-					  // correctly otherwise. 
+	checkRP6Status(dataRequestID);
+}
 
-	initLCD(); // Initialize the LC-Display (LCD)
-			   // Always call this before using the LCD!
-			   
-	writeString_P("\n\nFHICT Proftaak 4 Program!\n"); 
 
-	// IMPORTANT:
-	I2CTWI_initMaster(100); // Initialize the TWI Module for Master operation
-							// with 100kHz SCL Frequency
-							
-	// Register the event handlers:
+/**
+ * Initialize the two-wire-interface (Also called I2C)
+ */
+void initTWI(void)
+{
+    I2CTWI_initMaster(100);
+
+    // two-wire-interface event handlers
+    I2CTWI_setRequestedDataReadyHandler(I2C_requestedDataReady);
 	I2CTWI_setTransmissionErrorHandler(I2C_transmissionError);
+}
 
+/**
+ * Give the user a nice and warm welcome
+ */
+void welcome(void)
+{
 	// Play two sounds:
 	sound(180,80,25);
 	sound(220,80,25);
@@ -65,14 +75,21 @@ int main(void)
 
 	showScreenLCD("################", "################");
 	mSleep(500);
-	showScreenLCD("I2C-Master", "Rescue Robot");
+	showScreenLCD("RoboHeroes", "Rescue Robot");
 	mSleep(1000);
 	// ---------------------------------------
 	setLEDs(0b0000); // All LEDs off!
-	
-	uint8_t counter = 1;
+}
 
-	while(true) 
+int main(void)
+{
+	initRP6Control();
+	initLCD();
+    initTWI();
+
+    welcome();
+
+	while(true)
 	{
         // for now, we do nothing
 	}

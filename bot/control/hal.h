@@ -8,8 +8,8 @@
 
 /*****************************************************************************/
 
-#ifndef _HAL_H__
-#define _HAL_H__
+#ifndef _HAL_H_
+#define _HAL_H_
 
     /* Includes */
 
@@ -17,8 +17,9 @@
         void hal_hasWallLeft();
         void hal_hasWallRight();
         void hal_hasWallFront();
-        void hal_TurnLeft();
-        void hal_TurnRight();
-        void hal_MoveForward();
+        void hal_turnLeft();
+        void hal_turnRight();
+        void hal_moveForward();
+        void hal_init();
 
 #endif

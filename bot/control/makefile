@@ -51,6 +51,8 @@ RP6_LIB_PATH_OTHERS= $(RP6_LIB_PATH)/RP6control $(RP6_LIB_PATH)/RP6common
 SRC = $(TARGET).c
 # DO NOT EDIT THIS!
 
+# lib file for the HAL
+SRC += RP6Control_I2CMasterLib.c
 
 # Other source files
 SRC += hal.c

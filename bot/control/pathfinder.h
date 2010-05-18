@@ -8,8 +8,8 @@
 
 /*****************************************************************************/
 
-#ifndef _PATHFINDER_H__
-#define _PATHFINDER_H__
+#ifndef _PATHFINDER_H_
+#define _PATHFINDER_H_
 
     /* Includes */
 
