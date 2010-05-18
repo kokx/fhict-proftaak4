@@ -47,9 +47,11 @@
             this.tbRobot1Y = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btStatus = new System.Windows.Forms.Button();
             this.btKomTerug = new System.Windows.Forms.Button();
             this.btVolgendeStap = new System.Windows.Forms.Button();
-            this.btStatus = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.lbConnect = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -234,9 +236,19 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "comands";
             // 
+            // btStatus
+            // 
+            this.btStatus.Location = new System.Drawing.Point(41, 77);
+            this.btStatus.Name = "btStatus";
+            this.btStatus.Size = new System.Drawing.Size(99, 23);
+            this.btStatus.TabIndex = 5;
+            this.btStatus.Text = "geef status";
+            this.btStatus.UseVisualStyleBackColor = true;
+            this.btStatus.Click += new System.EventHandler(this.btStatus_Click);
+            // 
             // btKomTerug
             // 
-            this.btKomTerug.Location = new System.Drawing.Point(50, 19);
+            this.btKomTerug.Location = new System.Drawing.Point(41, 19);
             this.btKomTerug.Name = "btKomTerug";
             this.btKomTerug.Size = new System.Drawing.Size(99, 23);
             this.btKomTerug.TabIndex = 3;
@@ -246,7 +258,7 @@
             // 
             // btVolgendeStap
             // 
-            this.btVolgendeStap.Location = new System.Drawing.Point(50, 48);
+            this.btVolgendeStap.Location = new System.Drawing.Point(41, 48);
             this.btVolgendeStap.Name = "btVolgendeStap";
             this.btVolgendeStap.Size = new System.Drawing.Size(99, 23);
             this.btVolgendeStap.TabIndex = 4;
@@ -254,30 +266,39 @@
             this.btVolgendeStap.UseVisualStyleBackColor = true;
             this.btVolgendeStap.Click += new System.EventHandler(this.btVolgendeStap_Click);
             // 
-            // btStatus
+            // textBox1
             // 
-            this.btStatus.Location = new System.Drawing.Point(50, 77);
-            this.btStatus.Name = "btStatus";
-            this.btStatus.Size = new System.Drawing.Size(99, 23);
-            this.btStatus.TabIndex = 5;
-            this.btStatus.Text = "geef status";
-            this.btStatus.UseVisualStyleBackColor = true;
-            this.btStatus.Click += new System.EventHandler(this.btStatus_Click);
+            this.textBox1.Location = new System.Drawing.Point(257, 36);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(222, 20);
+            this.textBox1.TabIndex = 15;
+            // 
+            // lbConnect
+            // 
+            this.lbConnect.AutoSize = true;
+            this.lbConnect.Location = new System.Drawing.Point(257, 65);
+            this.lbConnect.Name = "lbConnect";
+            this.lbConnect.Size = new System.Drawing.Size(0, 13);
+            this.lbConnect.TabIndex = 16;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(803, 394);
+            this.Controls.Add(this.lbConnect);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox3);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -305,6 +326,8 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox tbRobot2Y;
         private System.Windows.Forms.Button btStatus;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label lbConnect;
 
     }
 }
