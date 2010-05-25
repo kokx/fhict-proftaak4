@@ -88,6 +88,11 @@ int main(void)
     initTWI();
 
     welcome();
+	
+	// initialize components
+	hal_init();
+	// pathfinder_init();
+	// ir_init();
 
 	while(true)
 	{
