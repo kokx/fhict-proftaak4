@@ -26,11 +26,13 @@
         struct node *south;
         struct node *east;
     };
+    // by default, all directions point to a node with x = 255 and y = 255, A.K.A. "The empty node"
 
     /* Includes */
 
     /* Function prototypes */
     uint8_t pathfinder_NextStep(void);
-    uint8_t pathfinder_SetTarget(uint8_t x, uint8_t y);
+    void pathfinder_SetTarget(uint8_t x, uint8_t y);
+    void pathfinder_init(void);
 
 #endif
