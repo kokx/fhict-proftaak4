@@ -12,6 +12,11 @@
 #define _HAL_H_
 
     /* Includes */
+	#include "RP6ControlLib.h" 		// The RP6 Control Library. 
+								// Always needs to be included!
+
+	#include "RP6I2CmasterTWI.h"	// I2C Master Library
+	#include "RP6I2CMasterLibExt.h"
 
     /* Function prototypes */
         uint8_t hal_hasWallLeft(void);
@@ -21,5 +26,6 @@
         void hal_turnRight(void);
         void hal_moveForward(void);
         void hal_init(void);
+		void hal_check(void);
 
 #endif
