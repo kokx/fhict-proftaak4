@@ -37,30 +37,6 @@ void scanZijkant(void)
 }
 */
 
-uint8_t hal_hasWallFront(void)
-{
-	uint8_t lightSens[4];
-
-	I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 13); // Start with register 13 (LSL_L)...
-	I2CTWI_readBytes(I2C_RP6_BASE_ADR, lightSens, 4); // and read all 4 registers up to
-	
-	setCursorPosLCD(1, 3);
-	writeIntegerLengthLCD(lightSens[0] + (lightSens[1]<<8), DEC, 4);
-	setCursorPosLCD(1, 11);
-	writeIntegerLengthLCD(lightSens[2] + (lightSens[3]<<8), DEC, 4);
-	uint16_t links; 
-	links = lightSens[0] + (lightSens[1]<<8) ;
-	uint16_t rechts; 
-	rechts = lightSens[2] + (lightSens[3]<<8);
-		if (links < 905 && rechts < 877)
-		{
-			return 1;
-		}
-		else
-		{
-			return 0;
-		}
-}
 
 void hal_turnLeft (void)
 {
@@ -123,6 +99,28 @@ uint8_t hal_hasWallLeft(void)
 	}
 }
 
+uint8_t hal_hasWallFront(void)
+{
+	uint8_t lightSens[4];
+
+	I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 13); // Start with register 13 (LSL_L)...
+	I2CTWI_readBytes(I2C_RP6_BASE_ADR, lightSens, 4); // and read all 4 registers up to
+	
+	uint16_t links; 
+	links = lightSens[0] + (lightSens[1]<<8) ;
+	uint16_t rechts; 
+	rechts = lightSens[2] + (lightSens[3]<<8);
+
+    if (links < 905 && rechts < 877)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 void hal_moveForward(void)
 {
     move(80, FWD, DIST_MM(210), BLOCKING);
@@ -138,8 +136,4 @@ void hal_init(void)
 
 	I2CTWI_transmit3Bytes(I2C_RP6_BASE_ADR, 0, CMD_SET_ACS_POWER, ACS_PWR_LOW);
 	sleep(50);
-	while(true)
-	{
-	hal_hasWallFront();
-	}
 }
