@@ -94,10 +94,12 @@ int main(void)
 	pathfinder_init(2, 3, NORTH); // X, Y, Direction
 	// ir_init();
 
+    direction dir;
+
 	while(true)
 	{
         // for now, we do nothing
-        pathfinder_NextStep(NORTH);
+        dir = pathfinder_NextStep(NORTH, 5, 5); // direction, X, Y
 	}
 	return 0;
 }

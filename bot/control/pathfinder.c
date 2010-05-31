@@ -22,6 +22,9 @@ uint8_t targetY;
 
 direction lastDirection;
 
+/*
+ * Link two nodes in a specific direction
+ */
 static void setDirection(struct node *parent, struct node *child, direction dir)
 {
     switch (dir) {
@@ -39,6 +42,10 @@ static void setDirection(struct node *parent, struct node *child, direction dir)
             break;
     }
 }
+
+/*
+ * Direction functions
+ */
 
 static direction turnLeft(direction currentDirection)
 {
@@ -95,10 +102,20 @@ static direction turnAround(direction currentDirection)
     return currentDirection;
 }
 
-static struct node *createNode(struct node *current, direction currentDirection)
+/*
+ * Create us a new node
+ */
+static struct node *createNode(struct node *current, direction currentDirection, uint8_t x, uint8_t y)
 {
     struct node *node;
     node = malloc(sizeof(node));
+
+    // TODO: Add X and Y
+
+    node->north = NULL;
+    node->west  = NULL;
+    node->south = NULL;
+    node->east  = NULL;
 
     setDirection(node, current, currentDirection);
     setDirection(current, node, lastDirection);
@@ -106,19 +123,18 @@ static struct node *createNode(struct node *current, direction currentDirection)
     return node;
 }
 
-direction pathfinder_NextStep(direction currentDirection)
+/*
+ * Make a new step
+ */
+direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
 {
     // first check if we have reached the target already
     if ((current->x == targetX) && (current->y = targetY)) {
-        return currentDirection;
+        // we ain't going anywhere soon!
+        return NONE;
     }
 
     // now check if we can only go one direction
-#if 0
-    if (hal_hasWallLeft() && hal_hasWallRight() && hal_hasWallFront()) {
-        // dead end
-    } else 
-#endif
     if (hal_hasWallLeft() && hal_hasWallRight() && !hal_hasWallFront()) {
         return currentDirection;
     } else if (hal_hasWallLeft() && !hal_hasWallRight() && hal_hasWallFront()) {
@@ -130,22 +146,42 @@ direction pathfinder_NextStep(direction currentDirection)
     // we cannot keep cruising normally
 
     // create a new node
-    struct node *node = createNode(current, currentDirection);
+    struct node *node = createNode(current, currentDirection, x, y);
 
+    if (hal_hasWallLeft() && hal_hasWallRight() && hal_hasWallFront()) {
+        // just turn around
+        current = node;
+        lastDirection = turnAround(currentDirection);
+        return lastDirection;
+    }
 
+    // link the directions to an empty node
+    if (!hal_hasWallLeft()) {
+        setDirection(node, empty, turnLeft(currentDirection));
+    }
+    if (!hal_hasWallRight()) {
+        setDirection(node, empty, turnRight(currentDirection));
+    }
+    if (!hal_hasWallFront()) {
+        setDirection(node, empty, currentDirection);
+    }
 
     lastDirection = currentDirection;
     return currentDirection;
 }
 
-// set the target for the pathfinder to find
+/*
+ * set the target for the pathfinder to find
+ */
 void pathfinder_SetTarget(uint8_t x, uint8_t y)
 {
     targetX = x;
     targetY = y;
 }
 
-// initialize the pathfinder
+/*
+ * Initialize the pathfinder
+ */
 void pathfinder_init(uint8_t x, uint8_t y, direction currentDirection)
 {
     lastDirection = currentDirection;

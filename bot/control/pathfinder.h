@@ -15,7 +15,8 @@
     #include "RP6ControlLib.h"
 
     /* Defines */
-    #define direction uint8_t
+    typedef uint8_t direction;
+    #define NONE  0
     #define NORTH 1
     #define WEST  2
     #define SOUTH 4
@@ -33,7 +34,7 @@
     // by default, all directions point to a node with x = 255 and y = 255, A.K.A. "The empty node"
 
     /* Function prototypes */
-    direction pathfinder_NextStep(direction currentDirection);
+    direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y);
     void pathfinder_SetTarget(uint8_t x, uint8_t y);
     void pathfinder_init(uint8_t x, uint8_t y, direction currentDirection);
 
