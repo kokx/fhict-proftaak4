@@ -11,11 +11,15 @@
 #ifndef _PATHFINDER_H_
 #define _PATHFINDER_H_
 
+    /* Includes */
+    #include "RP6ControlLib.h"
+
     /* Defines */
-    #define NORTH 0
-    #define WEST  1
-    #define SOUTH 2
-    #define EAST  3
+    #define direction uint8_t
+    #define NORTH 1
+    #define WEST  2
+    #define SOUTH 4
+    #define EAST  8
 
     /* Structures */
     struct node {
@@ -28,11 +32,9 @@
     };
     // by default, all directions point to a node with x = 255 and y = 255, A.K.A. "The empty node"
 
-    /* Includes */
-
     /* Function prototypes */
-    uint8_t pathfinder_NextStep(void);
+    direction pathfinder_NextStep(direction currentDirection);
     void pathfinder_SetTarget(uint8_t x, uint8_t y);
-    void pathfinder_init(void);
+    void pathfinder_init(uint8_t x, uint8_t y, direction currentDirection);
 
 #endif

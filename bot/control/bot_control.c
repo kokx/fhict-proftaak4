@@ -91,12 +91,13 @@ int main(void)
 	
 	// initialize components
 	hal_init();
-	// pathfinder_init();
+	pathfinder_init(2, 3, NORTH); // X, Y, Direction
 	// ir_init();
 
 	while(true)
 	{
         // for now, we do nothing
+        pathfinder_NextStep(NORTH);
 	}
 	return 0;
 }
