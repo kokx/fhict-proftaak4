@@ -15,6 +15,7 @@
 #include "RP6I2CmasterTWI.h"	// I2C Master Library
 #include "RP6I2CMasterLibExt.h"
 #define I2C_RP6_BASE_ADR 10	
+#define SPEED 80
 #include "hal.h"
 
 /*****************************************************************************/
@@ -185,10 +186,7 @@ uint8_t hal_hasWallFront(void)
 
 void hal_moveForward(void)
 {
-    move(80, FWD, DIST_MM(210), BLOCKING);
-	hal_check();
-	move(80, FWD, DIST_MM(210), BLOCKING);
-	hal_check();
+    move(SPEED, FWD, DIST_MM(420), BLOCKING);
 }
 
 void hal_init(void)
