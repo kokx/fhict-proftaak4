@@ -19,32 +19,94 @@
 
 /*****************************************************************************/
 
-
-// deze functie moet nog omgevormd worden naar hal_hasWallLeft(), hal_hasWallRight(), hal_hasWallFront()
-/*
-
-
-void scanZijkant(void)
+direction compassDirection;
+//noord = 1
+// zuid = 2
+// oost = 8
+// west = 4
+// dir 1 = links
+// dir 2 = rechts
+void beginRichting(void)
 {
-		writeString_P("\nADC3: ");
-		uint16_t adc3 = readADC(ADC_3); // Read ADC Channel 3 
-		writeInteger(adc3, DEC);
-		writeString(" | ADC2: ");
-		uint16_t adc2 = readADC(ADC_2); // Read ADC Channel 2
-		writeInteger(adc2, DEC);
-		writeChar('\n');
-		mSleep(500);	
+	I2CTWI_transmitByte(0x42, 0x41);
+	I2CTWI_transmitByte(0x42, 0x41);//2x voor actuele waarde
+	uint8_t compass[2];
+	I2CTWI_readBytes(0x43, compass, 2);
+	uint16_t richting = (compass[0]<<8) + compass[1];
+	if(richting == 710)
+	{
+		compassDirection = NORTH;
+	}
+	else if (richting == 510)
+	{
+		compassDirection = SOUTH;
+	}
 }
-*/
 
+void set_direction(uint8_t dir)
+{
+	if(compassDirection == NORTH) {
+		if(dir == 1)
+		{
+			compassDirection = WEST;
+		}
+		if(dir == 2)
+		{
+			compassDirection = EAST;
+		}
+	} else if(compassDirection == SOUTH) {
+		if(dir == 1)
+		{
+			compassDirection = EAST;
+		}
+		if(dir == 2)
+		{
+			compassDirection = WEST;
+		}
+	} else if(compassDirection == WEST) {
+		if(dir == 1)
+		{
+			compassDirection = NORTH;
+		}
+		if(dir == 2)
+		{
+			compassDirection = SOUTH;
+		}
+	} else if(compassDirection == EAST) {
+		if(dir == 1)
+		{
+			compassDirection = SOUTH;
+		}
+		if(dir == 2)
+		{
+			compassDirection = NORTH;
+		}
+	}	
+}
+
+
+
+void readCompass(void)
+{
+	I2CTWI_transmitByte(0x42, 0x41);
+	I2CTWI_transmitByte(0x42, 0x41);//2x voor actuele waarde
+	uint8_t compass[2];
+	I2CTWI_readBytes(0x43, compass, 2);
+	writeInteger(compass[0], DEC);
+	writeInteger(compass[1], DEC);
+	setCursorPosLCD(1, 3);
+	writeIntegerLengthLCD((compass[0]<<8) + compass[1], DEC, 4);
+}
 
 void hal_turnLeft (void)
 {
     rotate(50, LEFT, 90, BLOCKING);
+	set_direction(1);
 }
 void hal_turnRight (void)
 {
     rotate(50, RIGHT, 90, BLOCKING);
+	set_direction(2);
 }
 
 void hal_check(void)

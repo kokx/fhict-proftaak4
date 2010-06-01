@@ -13,14 +13,7 @@
 
     /* Includes */
     #include "RP6ControlLib.h"
-
-    /* Defines */
-    typedef uint8_t direction;
-    #define NONE  0
-    #define NORTH 1
-    #define WEST  2
-    #define SOUTH 4
-    #define EAST  8
+	#include "hal.h"
 
     /* Structures */
     struct node {

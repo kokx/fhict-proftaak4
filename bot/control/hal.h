@@ -17,6 +17,14 @@
 
 	#include "RP6I2CmasterTWI.h"	// I2C Master Library
 	#include "RP6I2CMasterLibExt.h"
+	
+	/* Defines */
+    typedef uint8_t direction;
+    #define NONE  0
+    #define NORTH 1
+    #define WEST  2
+    #define SOUTH 4
+    #define EAST  8
 
     /* Function prototypes */
         uint8_t hal_hasWallLeft(void);
