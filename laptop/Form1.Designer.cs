@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lbConnect = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.tbRobot2X = new System.Windows.Forms.TextBox();
@@ -46,8 +47,10 @@
             this.btZendCoordinaten = new System.Windows.Forms.Button();
             this.tbRobot1Y = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.lbConnect = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.cbComPorts = new System.Windows.Forms.ComboBox();
+            this.btConnect = new System.Windows.Forms.Button();
+            this.lbConnectie = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -76,6 +79,14 @@
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "coordinaten";
+            // 
+            // lbConnect
+            // 
+            this.lbConnect.AutoSize = true;
+            this.lbConnect.Location = new System.Drawing.Point(6, 342);
+            this.lbConnect.Name = "lbConnect";
+            this.lbConnect.Size = new System.Drawing.Size(0, 13);
+            this.lbConnect.TabIndex = 16;
             // 
             // label5
             // 
@@ -218,14 +229,6 @@
             this.textBox1.Size = new System.Drawing.Size(157, 370);
             this.textBox1.TabIndex = 15;
             // 
-            // lbConnect
-            // 
-            this.lbConnect.AutoSize = true;
-            this.lbConnect.Location = new System.Drawing.Point(6, 342);
-            this.lbConnect.Name = "lbConnect";
-            this.lbConnect.Size = new System.Drawing.Size(0, 13);
-            this.lbConnect.TabIndex = 16;
-            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(405, 32);
@@ -236,11 +239,42 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // cbComPorts
+            // 
+            this.cbComPorts.FormattingEnabled = true;
+            this.cbComPorts.Location = new System.Drawing.Point(358, 151);
+            this.cbComPorts.Name = "cbComPorts";
+            this.cbComPorts.Size = new System.Drawing.Size(121, 21);
+            this.cbComPorts.TabIndex = 17;
+            this.cbComPorts.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cbComPorts_MouseClick);
+            // 
+            // btConnect
+            // 
+            this.btConnect.Location = new System.Drawing.Point(548, 66);
+            this.btConnect.Name = "btConnect";
+            this.btConnect.Size = new System.Drawing.Size(75, 23);
+            this.btConnect.TabIndex = 18;
+            this.btConnect.Text = "Connect";
+            this.btConnect.UseVisualStyleBackColor = true;
+            this.btConnect.Click += new System.EventHandler(this.btConnect_Click);
+            // 
+            // lbConnectie
+            // 
+            this.lbConnectie.AutoSize = true;
+            this.lbConnectie.Location = new System.Drawing.Point(579, 32);
+            this.lbConnectie.Name = "lbConnectie";
+            this.lbConnectie.Size = new System.Drawing.Size(84, 13);
+            this.lbConnectie.TabIndex = 19;
+            this.lbConnectie.Text = "Geen Connectie";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(803, 394);
+            this.Controls.Add(this.lbConnectie);
+            this.Controls.Add(this.btConnect);
+            this.Controls.Add(this.cbComPorts);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.groupBox1);
@@ -276,6 +310,9 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label lbConnect;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox cbComPorts;
+        private System.Windows.Forms.Button btConnect;
+        private System.Windows.Forms.Label lbConnectie;
 
     }
 }
