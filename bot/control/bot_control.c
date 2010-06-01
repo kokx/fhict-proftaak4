@@ -21,6 +21,14 @@
 #include "ir.h"
 #include "pathfinder.h"
 
+// states
+#define STATE_SEND      0
+#define STATE_RECEIVE   1
+#define STATE_MOVE      2
+#define STATE_FINDPATH  3
+
+uint8_t state;
+
 /*****************************************************************************/
 
 // I2C Error handler
@@ -81,6 +89,74 @@ void welcome(void)
 	setLEDs(0b0000); // All LEDs off!
 }
 
+direction currentDirection;
+
+static void turnTo(direction dir)
+{
+    if (currentDirection == dir) {
+        return;
+    }
+    switch (dir) {
+        case NORTH:
+            switch (currentDirection) {
+                case SOUTH:
+                    hal_turnLeft();
+                    hal_turnLeft();
+                    break;
+                case WEST:
+                    hal_turnLeft();
+                    break;
+                case EAST:
+                    hal_turnRight();
+                    break;
+            }
+            break;
+        case WEST:
+            switch (currentDirection) {
+                case EAST:
+                    hal_turnLeft();
+                    hal_turnLeft();
+                    break;
+                case SOUTH:
+                    hal_turnLeft();
+                    break;
+                case NORTH:
+                    hal_turnRight();
+                    break;
+            }
+            break;
+        case SOUTH:
+            switch (currentDirection) {
+                case NORTH:
+                    hal_turnLeft();
+                    hal_turnLeft();
+                    break;
+                case EAST:
+                    hal_turnLeft();
+                    break;
+                case WEST:
+                    hal_turnRight();
+                    break;
+            }
+            break;
+        case EAST:
+            switch (currentDirection) {
+                case WEST:
+                    hal_turnLeft();
+                    hal_turnLeft();
+                    break;
+                case NORTH:
+                    hal_turnLeft();
+                    break;
+                case SOUTH:
+                    hal_turnRight();
+                    break;
+            }
+            break;
+    }
+}
+
+
 int main(void)
 {
 	initRP6Control();
@@ -88,19 +164,66 @@ int main(void)
     initTWI();
 
     welcome();
+
+    currentDirection = NORTH;
 	
 	// initialize components
 	hal_init();
-	pathfinder_init(2, 3, NORTH); // X, Y, Direction
+	pathfinder_init(2, 3, currentDirection); // X, Y, Direction
 	// ir_init();
 
-    direction dir;
+    // initialization of variables, will later happen with IR
+    direction dir = NORTH;
+    uint8_t x = 6;
+    uint8_t y = 8;
 
-	while(true)
-	{
-        // for now, we do nothing
-        dir = pathfinder_NextStep(NORTH, 5, 5); // direction, X, Y
+    state = STATE_RECEIVE;
+
+	while (true) {
+        switch (state) {
+            case STATE_RECEIVE:
+                // receive stuff
+                setCursorPosLCD(0, 0);
+                writeCharLCD('R');
+
+                state = STATE_SEND;
+                break;
+            case STATE_SEND:
+                // send stuff
+                setCursorPosLCD(0, 0);
+                writeCharLCD('S');
+
+                hal_scan();
+                state = STATE_FINDPATH;
+                break;
+            case STATE_FINDPATH:
+                setCursorPosLCD(0, 0);
+                writeCharLCD('F');
+
+                dir = pathfinder_NextStep(NORTH, x, y);
+
+                state = STATE_MOVE;
+                break;
+            case STATE_MOVE:
+                setCursorPosLCD(0, 0);
+                writeCharLCD('M');
+
+                turnTo(dir);
+                hal_moveForward();
+
+                state = STATE_RECEIVE;
+                break;
+        }
 	}
+#if 0
+    while (true) {
+        mSleep(1000);
+        showScreenLCD("Nee!", "Naab");
+        hal_moveForward();
+        showScreenLCD("Test", "Moved");
+    }
+#endif
+
 	return 0;
 }
 

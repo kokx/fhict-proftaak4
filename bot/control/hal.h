@@ -35,5 +35,6 @@
         void hal_moveForward(void);
         void hal_init(void);
 		void hal_check(void);
+        void hal_scan(void);
 
 #endif

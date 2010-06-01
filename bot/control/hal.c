@@ -99,6 +99,7 @@ void readCompass(void)
 	writeIntegerLengthLCD((compass[0]<<8) + compass[1], DEC, 4);
 }
 
+
 void hal_turnLeft (void)
 {
     rotate(50, LEFT, 90, BLOCKING);
@@ -133,55 +134,63 @@ void hal_check(void)
 	}
 }
 
+uint8_t wallRight = 0;
+uint8_t wallLeft  = 0;
+uint8_t wallFront = 0;
+
 uint8_t hal_hasWallRight(void)
 {
-	uint16_t rechts = readADC(ADC_2); 
-	if(rechts>150)
-	{
-		writeString_P("\nmuur rechts");
-		return 1;
-	}
-	else
-	{
-		return 0;
-	}
+    return wallRight;
 }
 
 
 uint8_t hal_hasWallLeft(void)
 {
-	uint16_t links = readADC(ADC_3);
-	if(links>150)
-	{
-		writeString_P("\nmuur links");
-		return 1;
-	}
-	else
-	{
-		return 0;
-	}
+    return wallLeft;
 }
 
 uint8_t hal_hasWallFront(void)
 {
-	uint8_t lightSens[4];
+    return wallFront;
+}
+
+static void writeBooleanToLcd(uint8_t bool)
+{
+    if (bool) {
+        writeCharLCD('Y');
+    } else {
+        writeCharLCD('N');
+    }
+}
+
+void hal_scan(void)
+{
+    // left, right
+    uint16_t rechts = readADC(ADC_3);
+    wallRight = (rechts > 100);
+
+    uint16_t links = readADC(ADC_2);
+    wallLeft = (links > 100);
+
+    uint8_t lightSens[4];
 
 	I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 13); // Start with register 13 (LSL_L)...
 	I2CTWI_readBytes(I2C_RP6_BASE_ADR, lightSens, 4); // and read all 4 registers up to
-	
-	uint16_t links; 
+
 	links = lightSens[0] + (lightSens[1]<<8) ;
-	uint16_t rechts; 
 	rechts = lightSens[2] + (lightSens[3]<<8);
 
-    if (links < 905 && rechts < 877)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
+    wallFront = ((links < 898) && (rechts < 917));
+
+    // put the stuff on the LCD
+    clearLCD();
+
+    setCursorPosLCD(1, 14);
+    writeBooleanToLcd(wallRight);
+    setCursorPosLCD(0, 7);
+    writeBooleanToLcd(wallFront);
+    setCursorPosLCD(1, 1);
+    writeBooleanToLcd(wallLeft);
 }
 
 void hal_moveForward(void)
@@ -191,8 +200,7 @@ void hal_moveForward(void)
 
 void hal_init(void)
 {
-	initLCD();
-		I2CTWI_initMaster(100); // Initialize the TWI Module for Master operation
+    I2CTWI_initMaster(100); // Initialize the TWI Module for Master operation
 
 	I2CTWI_transmit3Bytes(I2C_RP6_BASE_ADR, 0, CMD_SET_ACS_POWER, ACS_PWR_LOW);
 	sleep(50);
