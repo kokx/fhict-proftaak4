@@ -110,17 +110,47 @@ static struct node *createNode(struct node *current, direction currentDirection,
     struct node *node;
     node = malloc(sizeof(node));
 
-    // TODO: Add X and Y
+    node->x = x;
+    node->y = y;
 
     node->north = NULL;
     node->west  = NULL;
     node->south = NULL;
     node->east  = NULL;
 
+    // connect the current node to the new node
     setDirection(node, current, currentDirection);
     setDirection(current, node, lastDirection);
 
     return node;
+}
+
+/*
+ * Get a node from the current node if it exists)
+ */
+static struct node *getNode(struct node *current)
+{
+    struct node *node = NULL;
+    switch (lastDirection) {
+        case NORTH:
+            node = current->north;
+            break;
+        case WEST:
+            node = current->west;
+            break;
+        case SOUTH:
+            node = current->south;
+            break;
+        case EAST:
+            node = current->east;
+            break;
+    }
+
+    if (node != empty) {
+        return node;
+    }
+
+    return NULL;
 }
 
 /*
@@ -146,24 +176,28 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
     // we cannot keep cruising normally
 
     // create a new node
-    struct node *node = createNode(current, currentDirection, x, y);
+    struct node *node = getNode(current);
+
+    if (!node) {
+        node = createNode(current, currentDirection, x, y);
+
+        // link the available directions to an empty node
+        if (!hal_hasWallLeft()) {
+            setDirection(node, empty, turnLeft(currentDirection));
+        }
+        if (!hal_hasWallRight()) {
+            setDirection(node, empty, turnRight(currentDirection));
+        }
+        if (!hal_hasWallFront()) {
+            setDirection(node, empty, currentDirection);
+        }
+    }
 
     if (hal_hasWallLeft() && hal_hasWallRight() && hal_hasWallFront()) {
         // just turn around
         current = node;
         lastDirection = turnAround(currentDirection);
         return lastDirection;
-    }
-
-    // link the directions to an empty node
-    if (!hal_hasWallLeft()) {
-        setDirection(node, empty, turnLeft(currentDirection));
-    }
-    if (!hal_hasWallRight()) {
-        setDirection(node, empty, turnRight(currentDirection));
-    }
-    if (!hal_hasWallFront()) {
-        setDirection(node, empty, currentDirection);
     }
 
     lastDirection = currentDirection;
@@ -191,7 +225,7 @@ void pathfinder_init(uint8_t x, uint8_t y, direction currentDirection)
 
     root->x = x;
     root->y = y;
-    
+
     root->north = NULL;
     root->west  = NULL;
     root->south = NULL;
