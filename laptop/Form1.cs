@@ -13,6 +13,7 @@ namespace laptop
     public partial class Form1 : Form
     {
         private SerialPort sPort;
+        public bool IsConnected = false;
         //persoon
         string xpersoon1; 
         string xpersoon2;
@@ -100,7 +101,7 @@ namespace laptop
         }
 
         private void Form1_Load(object sender, EventArgs e)
-        {
+        {/*
             if (sPort == null)
             {
                 try
@@ -117,7 +118,7 @@ namespace laptop
                     lbConnect.Text = "niet geconnect";
                     btZendCoordinaten.Enabled = false;
                 }
-            }
+            }*/
         }
 
         private void schrijfdata()
@@ -129,6 +130,53 @@ namespace laptop
         {
             sPort.Write("0-0-32\n");
             
+        }
+
+        private void btConnect_Click(object sender, EventArgs e)
+        {
+            string ComPort = cbComPorts.Text;
+            if (sPort == null)
+            {
+                try
+                {
+                    sPort = new SerialPort(ComPort, 38400, Parity.None, 8, StopBits.One);
+                    sPort.DataReceived += new SerialDataReceivedEventHandler(RenesSerialDataReceived);
+                    sPort.Open();
+                    lbConnectie.Text = "Connectie gemaakt";
+                    IsConnected = true;
+
+                }
+                catch (System.IO.IOException)
+                {
+                    MessageBox.Show("Creation failed");
+                    lbConnectie.Text = "Geen Connectie";
+                    IsConnected = false;
+                }
+            }
+        }
+        public string[] AvailablePorts
+        {
+            get
+            {
+                string[] ports = System.IO.Ports.SerialPort.GetPortNames();
+
+                return ports;
+            }
+        }
+        private void updateComports()
+        {
+            string[] ports = AvailablePorts;
+
+            cbComPorts.Items.Clear();
+            for (int i = 0; i < ports.Length; i++)
+            {
+                cbComPorts.Items.Add(ports[i]);
+            }
+        }
+
+        private void cbComPorts_MouseClick(object sender, MouseEventArgs e)
+        {
+            updateComports();
         }
 
     }
