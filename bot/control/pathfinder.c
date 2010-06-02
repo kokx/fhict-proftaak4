@@ -51,15 +51,15 @@ static direction turnLeft(direction currentDirection)
 {
     switch (currentDirection) {
         case NORTH:
-            return WEST;
-            break;
-        case WEST:
-            return SOUTH;
-            break;
-        case SOUTH:
             return EAST;
             break;
         case EAST:
+            return SOUTH;
+            break;
+        case SOUTH:
+            return WEST;
+            break;
+        case WEST:
             return NORTH;
             break;
     }
@@ -69,15 +69,15 @@ static direction turnRight(direction currentDirection)
 {
     switch (currentDirection) {
         case NORTH:
-            return EAST;
-            break;
-        case EAST:
-            return SOUTH;
-            break;
-        case SOUTH:
             return WEST;
             break;
         case WEST:
+            return SOUTH;
+            break;
+        case SOUTH:
+            return EAST;
+            break;
+        case EAST:
             return NORTH;
             break;
     }
@@ -169,7 +169,7 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
         return currentDirection;
     } else if (hal_hasWallLeft() && !hal_hasWallRight() && hal_hasWallFront()) {
         return turnRight(currentDirection);
-    } else if (!hal_hasWallLeft() && hal_hasWallRight() && !hal_hasWallFront()) {
+    } else if (!hal_hasWallLeft() && hal_hasWallRight() && hal_hasWallFront()) {
         return turnLeft(currentDirection);
     }
 
@@ -196,8 +196,10 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
     if (hal_hasWallLeft() && hal_hasWallRight() && hal_hasWallFront()) {
         // just turn around
         current = node;
-        lastDirection = turnAround(currentDirection);
-        return lastDirection;
+        currentDirection = turnAround(currentDirection);
+    } else if (hal_hasWallFront()) {
+        current = node;
+        currentDirection = turnRight(currentDirection);
     }
 
     lastDirection = currentDirection;

@@ -70,6 +70,22 @@ void initTWI(void)
 	I2CTWI_setTransmissionErrorHandler(I2C_transmissionError);
 }
 
+/*
+ * Initialize the ACS
+ */
+void initACS(void)
+{
+    //ACS_setStateChangedHandler(acsStateChanged);
+
+	// ---------------------------------------
+	// Setup ACS power:
+	I2CTWI_transmit3Bytes(I2C_RP6_BASE_ADR, 0, CMD_SET_ACS_POWER, ACS_PWR_LOW); // ACS_POWER_MED
+	// Enable Watchdog for Interrupt requests:
+	I2CTWI_transmit3Bytes(I2C_RP6_BASE_ADR, 0, CMD_SET_WDT, true);
+	// Enable timed watchdog requests:
+	I2CTWI_transmit3Bytes(I2C_RP6_BASE_ADR, 0, CMD_SET_WDT_RQ, true);
+}
+
 /**
  * Give the user a nice and warm welcome
  */
@@ -156,12 +172,33 @@ static void turnTo(direction dir)
     }
 }
 
+// temp function
+static void writeDir(direction dir)
+{
+    setCursorPosLCD(0, 5);
+
+    switch (dir) {
+        case NORTH:
+            writeCharLCD('N');
+            break;
+        case WEST:
+            writeCharLCD('W');
+            break;
+        case SOUTH:
+            writeCharLCD('S');
+            break;
+        case EAST:
+            writeCharLCD('E');
+            break;
+    }
+}
 
 int main(void)
 {
 	initRP6Control();
 	initLCD();
     initTWI();
+    initACS();
 
     welcome();
 
@@ -201,6 +238,9 @@ int main(void)
                 writeCharLCD('F');
 
                 dir = pathfinder_NextStep(NORTH, x, y);
+
+                writeDir(dir);
+                mSleep(500);
 
                 state = STATE_MOVE;
                 break;

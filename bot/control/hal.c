@@ -102,12 +102,12 @@ void readCompass(void)
 
 void hal_turnLeft (void)
 {
-    rotate(50, LEFT, 90, BLOCKING);
+    rotate(50, LEFT, 95, BLOCKING);
 	set_direction(1);
 }
 void hal_turnRight (void)
 {
-    rotate(50, RIGHT, 90, BLOCKING);
+    rotate(50, RIGHT, 95, BLOCKING);
 	set_direction(2);
 }
 
@@ -172,25 +172,28 @@ void hal_scan(void)
     uint16_t links = readADC(ADC_2);
     wallLeft = (links > 100);
 
-    uint8_t lightSens[4];
-
-	I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 13); // Start with register 13 (LSL_L)...
-	I2CTWI_readBytes(I2C_RP6_BASE_ADR, lightSens, 4); // and read all 4 registers up to
-
-	links = lightSens[0] + (lightSens[1]<<8) ;
-	rechts = lightSens[2] + (lightSens[3]<<8);
-
-    wallFront = ((links < 898) && (rechts < 917));
+    //wallFront = ((links < 898) || (rechts < 917));
 
     // put the stuff on the LCD
     clearLCD();
 
-    setCursorPosLCD(1, 14);
-    writeBooleanToLcd(wallRight);
-    setCursorPosLCD(0, 7);
-    writeBooleanToLcd(wallFront);
-    setCursorPosLCD(1, 1);
-    writeBooleanToLcd(wallLeft);
+    if (obstacle_left) {
+        setCursorPosLCD(1, 0);
+        writeCharLCD('M');
+    }
+    if (obstacle_right) {
+        setCursorPosLCD(1, 15);
+        writeCharLCD('M');
+    }
+    if (wallLeft) {
+        setCursorPosLCD(1, 3);
+        writeCharLCD('L');
+    }
+    if (wallRight) {
+        setCursorPosLCD(1, 12);
+        writeCharLCD('R');
+    }
+    wallFront = (obstacle_left && obstacle_right);
 }
 
 void hal_moveForward(void)
