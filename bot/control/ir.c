@@ -30,6 +30,18 @@ void ir_receiveBaseStation()
 	I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 28);
 	uint8_t tijdelijk = I2CTWI_readByte(I2C_RP6_BASE_ADR);
 
+    // Oops! i did it again (van 44 naar 9)
+    if (tijdelijk >= 48 && tijdelijk <= 56) {
+        startY = tijdelijk - 48;
+    } else if (tijdelijk >= 32 && tijdelijk <= 38) {
+        startX = tijdelijk - 32;
+    } else if (tijdelijk >= 16 && tijdelijk <= 24) {
+        personY = tijdelijk - 16;
+    } else if (tijdelijk <= 6) {
+        personX = tijdelijk;
+    }
+
+#if 0
 	switch(tijdelijk)
 	{
 		//persoonX
@@ -74,6 +86,7 @@ void ir_receiveBaseStation()
 
 		default: /*niets*/ break;
 	}
+#endif
 }
 
 
@@ -84,7 +97,6 @@ void ir_sendSituation(direction dir, uint8_t x, uint8_t y)
 	receive_buffer[1] = y+16;
 
 	// direction
-    // alex kan blijkbaar niet coden !!!!
 	if (dir == NORTH){
         receive_buffer[2] = 32;
     } else if (dir == EAST) {
