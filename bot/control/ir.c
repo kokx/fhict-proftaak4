@@ -84,20 +84,37 @@ void ir_sendSituation(direction dir, uint8_t x, uint8_t y)
 	receive_buffer[1] = y+16;
 	
 	// direction
-	if(dir == NORTH){receive_buffer[2] = 32}
-	else if(dir == EAST) {receive_buffer[2] = 33}
-	else if(dir == SOUTH){receive_buffer[2] = 34}
-	else if(dir == WEST) {receive_buffer[2] = 35}
+    // alex kan blijkbaar niet coden !!!!
+	if (dir == NORTH){
+        receive_buffer[2] = 32;
+    } else if (dir == EAST) {
+        receive_buffer[2] = 33;
+    } else if (dir == SOUTH) {
+        receive_buffer[2] = 34;
+    } else if (dir == WEST) {
+        receive_buffer[2] = 35;
+    }
+
+    // pro-tip: het maakt geen zak uit hoe veel lijnen een programma is
 	
-	// wal
- 	if(hal_hasWallLeft() == false && hal_hasWallRight() == false && hal_hasWallFront() == false){receive_buffer[3] = 40;}
-	else if(hal_hasWallLeft() == false && hal_hasWallRight() == true && hal_hasWallFront() == false){receive_buffer[3] = 41;}
-	else if(hal_hasWallLeft() == false && hal_hasWallRight() == false && hal_hasWallFront() == true){receive_buffer[3] = 42;}
-	else if(hal_hasWallLeft() == false && hal_hasWallRight() == true && hal_hasWallFront() == true){receive_buffer[3] = 43;}
-	else if(hal_hasWallLeft() == true && hal_hasWallRight() == false && hal_hasWallFront() == false){receive_buffer[3] = 44;}
-	else if(hal_hasWallLeft() == true && hal_hasWallRight() == true && hal_hasWallFront() == false){receive_buffer[3] = 45;}
-	else if(hal_hasWallLeft() == true && hal_hasWallRight() == false && hal_hasWallFront() == true){receive_buffer[3] = 46;}
-	else if(hal_hasWallLeft() == true && hal_hasWallRight() == true && hal_hasWallFront() == true){receive_buffer[3] = 47;}
+	// wall
+ 	if (hal_hasWallLeft() == false && hal_hasWallRight() == false && hal_hasWallFront() == false) {
+        receive_buffer[3] = 40;
+    } else if (hal_hasWallLeft() == false && hal_hasWallRight() == true && hal_hasWallFront() == false) {
+        receive_buffer[3] = 41;
+    } else if (hal_hasWallLeft() == false && hal_hasWallRight() == false && hal_hasWallFront() == true) {
+        receive_buffer[3] = 42;
+    } else if (hal_hasWallLeft() == false && hal_hasWallRight() == true && hal_hasWallFront() == true) {
+        receive_buffer[3] = 43;
+    } else if (hal_hasWallLeft() == true && hal_hasWallRight() == false && hal_hasWallFront() == false) {
+        receive_buffer[3] = 44;
+    } else if (hal_hasWallLeft() == true && hal_hasWallRight() == true && hal_hasWallFront() == false) {
+        receive_buffer[3] = 45;
+    } else if (hal_hasWallLeft() == true && hal_hasWallRight() == false && hal_hasWallFront() == true) {
+        receive_buffer[3] = 46;
+    } else if (hal_hasWallLeft() == true && hal_hasWallRight() == true && hal_hasWallFront() == true) {
+        receive_buffer[3] = 47;
+    }
 
 	SPI_EEPROM_writeBytes(0, receive_buffer, schrijf);
 	
