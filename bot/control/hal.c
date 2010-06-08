@@ -22,6 +22,9 @@
 
 direction compassDirection;
 
+uint8_t halX;
+uint8_t halY;
+
 direction hal_direction(void)
 {	I2CTWI_transmitByte(0x42, 0x41);
 	I2CTWI_transmitByte(0x42, 0x41);//2x voor actuele waarde
@@ -50,6 +53,34 @@ direction hal_direction(void)
     return compassDirection;
 }
 
+static void updateDirection(void)
+{
+    hal_direction();
+
+    switch (compassDirection) {
+        case NORTH:
+            halY--;
+            break;
+        case WEST:
+            halX--;
+            break;
+        case SOUTH:
+            halY++;
+            break;
+        case EAST:
+            halX++;
+            break;
+    }
+}
+
+uint8_t hal_getX(void)
+{
+    return halX;
+}
+uint8_t hal_getY(void)
+{
+    return halY;
+}
 
 void hal_turnLeft (void)
 {
@@ -59,28 +90,10 @@ void hal_turnRight (void)
 {
     rotate(50, RIGHT, 95, BLOCKING);
 }
-
-void hal_check(void)
+void hal_moveForward(void)
 {
-	uint16_t adc3 = readADC(ADC_3);
-	uint16_t adc2 = readADC(ADC_2); 
-	uint16_t verschil;
-	if(adc3 > adc2)
-	{
-		verschil = adc3 - adc2;
-		hal_turnLeft();
-		move(30, FWD, DIST_MM(20), BLOCKING);
-		hal_turnRight();
-		
-
-	}
-	else if(adc2 > adc3)
-	{
-		verschil = adc2 - adc3;
-		hal_turnRight();
-		move(30, FWD, DIST_MM(20), BLOCKING);
-		hal_turnLeft();
-	}
+    move(SPEED, FWD, DIST_MM(420), BLOCKING);
+    updateDirection();
 }
 
 uint8_t wallRight = 0;
@@ -91,13 +104,10 @@ uint8_t hal_hasWallRight(void)
 {
     return wallRight;
 }
-
-
 uint8_t hal_hasWallLeft(void)
 {
     return wallLeft;
 }
-
 uint8_t hal_hasWallFront(void)
 {
     return wallFront;
@@ -136,13 +146,11 @@ void hal_scan(void)
     wallFront = (obstacle_left && obstacle_right);
 }
 
-void hal_moveForward(void)
+void hal_init(uint8_t x, uint8_t y)
 {
-    move(SPEED, FWD, DIST_MM(420), BLOCKING);
-}
+    halX = x;
+    halY = y;
 
-void hal_init(void)
-{
     I2CTWI_initMaster(100); // Initialize the TWI Module for Master operation
 
 	I2CTWI_transmit3Bytes(I2C_RP6_BASE_ADR, 0, CMD_SET_ACS_POWER, ACS_PWR_LOW);

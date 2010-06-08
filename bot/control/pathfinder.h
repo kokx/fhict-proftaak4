@@ -28,7 +28,7 @@
 
     /* Function prototypes */
     direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y);
-    void pathfinder_SetTarget(uint8_t x, uint8_t y);
+    void pathfinder_setTarget(uint8_t x, uint8_t y);
     void pathfinder_init(uint8_t x, uint8_t y, direction currentDirection);
 
 #endif

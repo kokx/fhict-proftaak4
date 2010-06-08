@@ -194,10 +194,10 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
     }
 
     if (hal_hasWallLeft() && hal_hasWallRight() && hal_hasWallFront()) {
-        // just turn around
+        // dead end
         current = node;
         currentDirection = turnAround(currentDirection);
-    } else if (hal_hasWallFront()) {
+    } else {
         current = node;
         currentDirection = turnRight(currentDirection);
     }
@@ -209,7 +209,7 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
 /*
  * set the target for the pathfinder to find
  */
-void pathfinder_SetTarget(uint8_t x, uint8_t y)
+void pathfinder_setTarget(uint8_t x, uint8_t y)
 {
     targetX = x;
     targetY = y;

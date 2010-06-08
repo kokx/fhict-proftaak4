@@ -204,15 +204,21 @@ int main(void)
 
     currentDirection = NORTH;
 	
-	// initialize components
-	hal_init();
-	pathfinder_init(2, 3, currentDirection); // X, Y, Direction
-	// ir_init();
-
     // initialization of variables, will later happen with IR
     direction dir = NORTH;
     uint8_t x = 6;
     uint8_t y = 8;
+
+    uint8_t targetX = 2;
+    uint8_t targetY = 4;
+
+	// initialize components
+	hal_init(x, y);
+	pathfinder_init(x, y, currentDirection); // X, Y, Direction
+	// ir_init();
+    
+    pathfinder_setTarget(targetX, targetY);
+
 
     state = STATE_RECEIVE;
 
@@ -255,14 +261,6 @@ int main(void)
                 break;
         }
 	}
-#if 0
-    while (true) {
-        mSleep(1000);
-        showScreenLCD("Nee!", "Naab");
-        hal_moveForward();
-        showScreenLCD("Test", "Moved");
-    }
-#endif
 
 	return 0;
 }
