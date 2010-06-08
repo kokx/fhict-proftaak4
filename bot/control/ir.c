@@ -19,8 +19,31 @@ uint8_t startY;
 
 void ir_sendBaseStation()
 {
-	SPI_EEPROM_readBytes(lees, transmit_buffer, 8); 
-	I2CTWI_transmitBytes(RP6BASE_I2C_SLAVE_ADR, transmit_buffer, 8);
+	I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 27); 
+	uint8_t divice_bit = I2CTWI_readByte(I2C_RP6_BASE_ADR);
+	
+	SPI_EEPROM_readBytes(lees, transmit_buffer, 8);
+	mSleep(10);
+	
+	if(divice_bit == 8 || divice_bit == 9){
+	IRCOMM_sendRC5(9,transmit_buffer[0]);
+	mSleep(10);
+	IRCOMM_sendRC5(9,transmit_buffer[1]);
+	mSleep(10);
+	IRCOMM_sendRC5(9,transmit_buffer[2]);
+	mSleep(10);
+	IRCOMM_sendRC5(9,transmit_buffer[3]);
+	}
+	
+	else if(divice_bit == 16 || divice_bit == 17){
+	IRCOMM_sendRC5(17,transmit_buffer[0]);
+	mSleep(10);
+	IRCOMM_sendRC5(17,transmit_buffer[1]);
+	mSleep(10);
+	IRCOMM_sendRC5(17,transmit_buffer[2]);
+	mSleep(10);
+	IRCOMM_sendRC5(17,transmit_buffer[3]);
+	}
 	
 	lees = (lees + 8);
 }
