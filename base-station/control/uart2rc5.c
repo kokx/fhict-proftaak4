@@ -44,10 +44,6 @@ void receiveRC5Data(RC5data_t rc5data)
 
 
 /*****************************************************************************/
-// Question game
-
-// A global variable that stores the current question:
-int8_t question = 0;
 
 /**
  * Here we receive data from the PC and transmit it to the IR. 
@@ -57,7 +53,7 @@ int8_t question = 0;
  */
 void receiveAndBeamup(void)
 {
-	if(getBufferLength()) // check if data available, if so handle it, if not: skip
+	if(getBufferLength() > 0) // check if data available, if so handle it, if not: skip
 	{
 		RC5data_t rc5dataToSend;	// this datatype contains three members:
 									// rc5dataToSend.toggle_bit		should be 0 or 1
@@ -82,21 +78,22 @@ void receiveAndBeamup(void)
 			
 		clearReceptionBuffer(); // Make sure reception Buffer is empty and no junk data 
 								// is left in it.
+
 		uint8_t cnt;
 		for(cnt = 0; cnt < charsToReceive+1; cnt++) {
-			receiveBuffer[cnt]=0;
+			receiveBuffer[cnt] = '\0';
 		}
 		
 		for(cnt = 0; cnt < 3; cnt++) {
-			rc5deviceBuffer[cnt]=0;
-			rc5codeBuffer[cnt]=0;
+			rc5deviceBuffer[cnt] = '\0';
+			rc5codeBuffer[cnt] = '\0';
 		}
 			
 		uint8_t buffer_pos = 0;
 		while(true) // Loop until we received one line of Data!
 		{ 
-			if(getBufferLength())    // Check if we still have data (means getBufferLength() 
-			{						 // is not zero)	
+			if(getBufferLength() > 0)   // Check if we still have data (means getBufferLength() 
+			{							 // is not zero)	
 				receiveBuffer[buffer_pos] = readChar(); // get next character from reception buffer
 				if(receiveBuffer[buffer_pos]=='\n') // End of line detected!
 				{
@@ -115,6 +112,8 @@ void receiveAndBeamup(void)
 				buffer_pos++;			
 			}										 
 		}
+		clearReceptionBuffer(); // Make sure reception Buffer is empty and no junk data 
+								// is left in it.
 	
 		// ------------------------------------------
 		// Now parse the received data:
@@ -125,7 +124,7 @@ void receiveAndBeamup(void)
 			rc5dataToSend.toggle_bit = 0;
 		}
 		// next part, device 
-		buffer_pos = 2; 
+		buffer_pos = 1; // dit is een hack om het te laten werken! Oorspronkelijk stond er een 2.
 		cnt = 0;
 		while(receiveBuffer[buffer_pos] != '-') {
 			rc5deviceBuffer[cnt] = receiveBuffer[buffer_pos];
