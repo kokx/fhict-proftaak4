@@ -33,19 +33,19 @@ direction hal_direction(void)
 	uint16_t compas = (compass[0]<<8) + compass[1];
 	if(compas > 3150 && compas < 450)
 	{
-		compassDirection = NORTH;
+		compassDirection = WEST;
 	}
 	else if(compas > 450 && compas < 1350)
 	{
-		compassDirection = EAST;
+		compassDirection = NORTH;
 	}
 	else if(compas > 1350 && compas < 2250)
 	{
-		compassDirection = SOUTH;
+		compassDirection = EAST;
 	}
 	else if(compas > 2250 && compas < 3150)
 	{
-		compassDirection = WEST;
+		compassDirection = SOUTH;
 	}
 	setCursorPosLCD(1, 7);
 	writeIntegerLCD(compassDirection, DEC);
@@ -155,4 +155,5 @@ void hal_init(uint8_t x, uint8_t y)
 
 	I2CTWI_transmit3Bytes(I2C_RP6_BASE_ADR, 0, CMD_SET_ACS_POWER, ACS_PWR_LOW);
 	sleep(50);
+	hal_direction();
 }
