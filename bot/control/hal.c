@@ -21,6 +21,33 @@
 /*****************************************************************************/
 
 direction compassDirection;
+
+void Richting(void)
+{	I2CTWI_transmitByte(0x42, 0x41);
+	I2CTWI_transmitByte(0x42, 0x41);//2x voor actuele waarde
+	uint8_t compass[2];
+	I2CTWI_readBytes(0x43, compass, 2);
+	uint16_t compas = (compass[0]<<8) + compass[1];
+	if(compas > 3150 && compas < 450)
+	{
+		compassDirection = NORTH;
+	}
+	else if(compas > 450 && compas < 1350)
+	{
+		compassDirection = EAST;
+	}
+	else if(compas > 1350 && compas < 2250)
+	{
+		compassDirection = SOUTH;
+	}
+	else if(compas > 2250 && compas < 3150)
+	{
+		compassDirection = WEST;
+	}
+	setCursorPosLCD(1, 7);
+	writeIntegerLCD(compassDirection, DEC);
+}
+
 //noord = 1
 // zuid = 2
 // oost = 8
@@ -152,15 +179,6 @@ uint8_t hal_hasWallLeft(void)
 uint8_t hal_hasWallFront(void)
 {
     return wallFront;
-}
-
-static void writeBooleanToLcd(uint8_t bool)
-{
-    if (bool) {
-        writeCharLCD('Y');
-    } else {
-        writeCharLCD('N');
-    }
 }
 
 void hal_scan(void)
