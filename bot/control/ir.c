@@ -14,31 +14,72 @@ uint8_t startY;
 
 void ir_sendBaseStation()
 {
-	I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 27); 
-	uint8_t divice_bit = I2CTWI_readByte(I2C_RP6_BASE_ADR);
+	if (lees < schrijf){
+		I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 27); 
+		uint8_t divice_bit = I2CTWI_readByte(I2C_RP6_BASE_ADR);
 	
-	SPI_EEPROM_readBytes(lees, transmit_buffer, 8);
-	mSleep(10);
-	
-    if (divice_bit == 8 || divice_bit == 9) {
-        IRCOMM_sendRC5(9,transmit_buffer[0]);
-        mSleep(10);
-        IRCOMM_sendRC5(9,transmit_buffer[1]);
-        mSleep(10);
-        IRCOMM_sendRC5(9,transmit_buffer[2]);
-        mSleep(10);
-        IRCOMM_sendRC5(9,transmit_buffer[3]);
-    } else if (divice_bit == 16 || divice_bit == 17) {
-        IRCOMM_sendRC5(17,transmit_buffer[0]);
-        mSleep(10);
-        IRCOMM_sendRC5(17,transmit_buffer[1]);
-        mSleep(10);
-        IRCOMM_sendRC5(17,transmit_buffer[2]);
-        mSleep(10);
-        IRCOMM_sendRC5(17,transmit_buffer[3]);
-    }
-	
+		SPI_EEPROM_readBytes(lees, transmit_buffer, 8);
+		mSleep(10);
+		
+		if (divice_bit == 8 || divice_bit == 9) {
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 1, 9);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[0]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[1]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[2]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[3]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			
+			
+		} else if (divice_bit == 16 || divice_bit == 17) {
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 1, 17);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[0]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[1]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[2]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[3]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+		}
 	lees = (lees + 8);
+	}else if(lees == schrijf){
+		I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 27); 
+		uint8_t divice_bit = I2CTWI_readByte(I2C_RP6_BASE_ADR);
+	
+		SPI_EEPROM_readBytes(lees, transmit_buffer, 8);
+		mSleep(10);
+		
+		if (divice_bit == 8 || divice_bit == 9) {
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 1, 9);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[0]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[1]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[2]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[3]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, 84);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+		
+		} else if (divice_bit == 16 || divice_bit == 17) {
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 1, 17);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[0]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[1]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[2]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[3]);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, 84);
+			I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+		}	
+	lees = (lees + 8);
+	}
 }
 
 void ir_receiveBaseStation()
@@ -46,7 +87,6 @@ void ir_receiveBaseStation()
 	I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 28);
 	uint8_t tijdelijk = I2CTWI_readByte(I2C_RP6_BASE_ADR);
 
-    // Oops! i did it again (van 44 naar 9)
     if (tijdelijk >= 48 && tijdelijk <= 56) {
         startY = tijdelijk - 48;
     } else if (tijdelijk >= 32 && tijdelijk <= 38) {
