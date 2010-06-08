@@ -12,6 +12,7 @@ uint8_t personY;
 uint8_t startX;
 uint8_t startY;
 
+#if 0
 void ir_sendBaseStation()
 {
 	I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 27); 
@@ -96,3 +97,4 @@ void ir_sendSituation(direction dir, uint8_t x, uint8_t y)
 
 	schrijf = (schrijf + 8);
 }
+#endif

@@ -20,36 +20,39 @@
 
 /*****************************************************************************/
 
-direction compassDirection;
+direction compassDirection = NORTH;
 
 uint8_t halX;
 uint8_t halY;
 
 direction hal_direction(void)
-{	I2CTWI_transmitByte(0x42, 0x41);
+{
+#if 0
+    I2CTWI_transmitByte(0x42, 0x41);
 	I2CTWI_transmitByte(0x42, 0x41);//2x voor actuele waarde
 	uint8_t compass[2];
 	I2CTWI_readBytes(0x43, compass, 2);
 	uint16_t compas = (compass[0]<<8) + compass[1];
-	if(compas > 3150 && compas < 450)
-	{
-		compassDirection = WEST;
-	}
-	else if(compas > 450 && compas < 1350)
+	if(compas > 3150 || compas < 450)
 	{
 		compassDirection = NORTH;
 	}
-	else if(compas > 1350 && compas < 2250)
+	else if(compas > 450 && compas < 1350)
 	{
 		compassDirection = EAST;
 	}
-	else if(compas > 2250 && compas < 3150)
+	else if(compas > 1350 && compas < 2250)
 	{
 		compassDirection = SOUTH;
 	}
+	else if(compas > 2250 && compas < 3150)
+	{
+		compassDirection = WEST;
+	}
 	setCursorPosLCD(1, 7);
 	writeIntegerLCD(compassDirection, DEC);
-
+#endif
+    
     return compassDirection;
 }
 
@@ -73,6 +76,45 @@ static void updateDirection(void)
     }
 }
 
+void updateRichting(uint8_t dir)
+{
+    switch (compassDirection) {
+        case NORTH:
+            if (dir == 1) {
+                compassDirection = WEST;
+            }
+            else {
+                compassDirection = EAST;
+            }
+            break;
+        case WEST:
+            if (dir == 1) {
+                compassDirection = SOUTH;
+            }
+            else {
+                compassDirection = NORTH;
+            }
+            break;
+        case SOUTH:
+            if (dir == 1) {
+                compassDirection = EAST;
+            }
+            else {
+                compassDirection = WEST;
+            }
+            break;
+        case EAST:
+            if (dir == 1) {
+                compassDirection = NORTH;
+            }
+            else {
+                compassDirection = SOUTH;
+            }
+            break;
+    }
+}
+
+
 uint8_t hal_getX(void)
 {
     return halX;
@@ -85,10 +127,12 @@ uint8_t hal_getY(void)
 void hal_turnLeft (void)
 {
     rotate(50, LEFT, 95, BLOCKING);
+    updateRichting(1);
 }
 void hal_turnRight (void)
 {
     rotate(50, RIGHT, 95, BLOCKING);
+    updateRichting(2);
 }
 void hal_moveForward(void)
 {
@@ -127,6 +171,7 @@ void hal_scan(void)
     // put the stuff on the LCD
     clearLCD();
 
+#if 0
     if (obstacle_left) {
         setCursorPosLCD(1, 0);
         writeCharLCD('M');
@@ -143,7 +188,13 @@ void hal_scan(void)
         setCursorPosLCD(1, 12);
         writeCharLCD('R');
     }
+#endif
     wallFront = (obstacle_left && obstacle_right);
+    
+    if (wallFront) {
+        setCursorPosLCD(1, 12);
+        writeCharLCD('F');
+    }
 }
 
 void hal_init(uint8_t x, uint8_t y)

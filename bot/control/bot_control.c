@@ -26,6 +26,7 @@
 #define STATE_RECEIVE   1
 #define STATE_MOVE      2
 #define STATE_FINDPATH  3
+#define STATE_END       4
 
 uint8_t state;
 
@@ -190,6 +191,9 @@ static void writeDir(direction dir)
         case EAST:
             writeCharLCD('E');
             break;
+        default:
+            writeIntegerLCD(dir, DEC);
+            break;
     }
 }
 
@@ -202,15 +206,15 @@ int main(void)
 
     welcome();
 
-    currentDirection = NORTH;
-	
+    currentDirection = hal_direction();
+
     // initialization of variables, will later happen with IR
-    direction dir = NORTH;
+    direction dir = NONE;
     uint8_t x = 6;
     uint8_t y = 8;
 
-    uint8_t targetX = 2;
-    uint8_t targetY = 4;
+    uint8_t targetX = 0;
+    uint8_t targetY = 8;
 
 	// initialize components
 	hal_init(x, y);
@@ -218,7 +222,6 @@ int main(void)
 	// ir_init();
     
     pathfinder_setTarget(targetX, targetY);
-
 
     state = STATE_RECEIVE;
 
@@ -238,14 +241,25 @@ int main(void)
 
                 hal_scan();
                 state = STATE_FINDPATH;
+                currentDirection = hal_direction();
+
+                // get X and Y pos
+                x = hal_getX();
+                y = hal_getY();
+
+                // show the X and Y pos on the screen
+                setCursorPosLCD(0, 9);
+                writeIntegerLCD(x, DEC);
+                setCursorPosLCD(0, 12);
+                writeIntegerLCD(y, DEC);
                 break;
             case STATE_FINDPATH:
                 setCursorPosLCD(0, 0);
                 writeCharLCD('F');
 
-                dir = pathfinder_NextStep(NORTH, x, y);
+                dir = pathfinder_NextStep(currentDirection, x, y);
 
-                writeDir(dir);
+                //writeDir(dir);
                 mSleep(500);
 
                 state = STATE_MOVE;
@@ -254,14 +268,26 @@ int main(void)
                 setCursorPosLCD(0, 0);
                 writeCharLCD('M');
 
+                if ((dir == NONE) && (targetX == hal_getX()) && (targetY == hal_getY())) {
+                    state = STATE_END;
+                    break;
+                }
                 turnTo(dir);
                 hal_moveForward();
 
                 state = STATE_RECEIVE;
                 break;
         }
+        if (state == STATE_END) {
+            break;
+        }
 	}
+
+	showScreenLCD("You just lost", "   THE GAME");
+
+    while (1) {
+        mSleep(60000);
+    }
 
 	return 0;
 }
-

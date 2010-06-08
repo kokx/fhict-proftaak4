@@ -17,6 +17,7 @@
 
     /* Structures */
     struct node {
+        uint8_t count;
         uint8_t x;
         uint8_t y;
         struct node *north;
