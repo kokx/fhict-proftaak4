@@ -27,6 +27,7 @@
     #define EAST  8
 
     /* Function prototypes */
+        direction hal_direction(void);
         uint8_t hal_hasWallLeft(void);
         uint8_t hal_hasWallRight(void);
         uint8_t hal_hasWallFront(void);
