@@ -279,7 +279,7 @@ int main(void)
         }
 	}
 
-	showScreenLCD("You just lost", "   THE GAME");
+	showScreenLCD("Achievement", "Unlocked!!!");
 
     while (1) {
         mSleep(60000);

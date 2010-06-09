@@ -1,4 +1,4 @@
-/* 
+/*
  * ****************************************************************************
  * RP6 ROBOT SYSTEM - RP6 CONTROL M32 Examples
  * ****************************************************************************
@@ -42,6 +42,25 @@ static void list_addNode(uint8_t x, uint8_t y)
     lastNode = new;
 }
 
+/*
+ * Check the walls config
+ */
+static uint8_t checkWalls(uint8_t x, uint8_t y)
+{
+    if (!(map[x][y] & PATH_NORTH) && !(map[x][y] & WALL_NORTH)) {
+        return true;
+    }
+    if (!(map[x][y] & PATH_WEST) && !(map[x][y] & WALL_WEST)) {
+        return true;
+    }
+    if (!(map[x][y] & PATH_SOUTH) && !(map[x][y] & WALL_SOUTH)) {
+        return true;
+    }
+    if (!(map[x][y] & PATH_EAST) && !(map[x][y] & WALL_EAST)) {
+        return true;
+    }
+    return false;
+}
 
 // temp function
 static void writeDir(direction dir, uint8_t num)
@@ -155,6 +174,10 @@ static void getAvailableDirections(direction currentDirection)
 
 static void checkAvailableDirections(uint8_t x, uint8_t y, uint8_t num)
 {
+    if ((targetX != finalTargetX) || (targetY != finalTargetY)) {
+        return;
+    }
+
     switch (dirs[num]) {
         case NORTH:
             if (!(map[x][y] & PATH_NORTH)) {
@@ -226,7 +249,7 @@ static printLinkedList()
     do {
         setCursorPosLCD(0, 4);
         writeCharLCD('X');
-        
+
         setCursorPosLCD(0, 6);
         writeIntegerLCD(node->x, DEC);
 
@@ -236,7 +259,7 @@ static printLinkedList()
         setCursorPosLCD(0, 10);
         writeIntegerLCD(node->y, DEC);
 
-        mSleep(1000);
+        mSleep(300);
     } while (node = node->next);
 }
 
@@ -247,8 +270,12 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
 {
     // first check if we have reached the target already
     if ((x == targetX) && (y == targetY)) {
-        // we ain't going anywhere soon!
-        return NONE;
+        if ((targetX == finalTargetX) && (targetY == finalTargetY)) {
+            // we ain't going anywhere soon!
+            return NONE;
+        }
+        targetX = finalTargetX;
+        targetY = finalTargetY;
     }
 
     // save the walls
@@ -263,7 +290,7 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
     }
 
     // print walls config
-    printLinkedList();
+    // printLinkedList();
 
     // save the current position
     savePosition(x, y, turnAround(currentDirection));
@@ -283,7 +310,7 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
     }
 
     list_addNode(x, y);
-    
+
     // now we need to make a slightly more complicated decision
     uint8_t diffX = abs(x - targetX);
     uint8_t diffY = abs(y - targetY);
@@ -294,9 +321,9 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
     writeCharLCD('Y');
 
     setCursorPosLCD(0, 15);
-    writeIntegerLCD(diffX, DEC);
+    writeIntegerLCD(x, DEC);
     setCursorPosLCD(1, 15);
-    writeIntegerLCD(diffY, DEC);
+    writeIntegerLCD(y, DEC);
 
     // get the best order of directions
     direction bestOrder[4];
@@ -340,8 +367,8 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
 
     // check the available directions
     for (int i = 0; i < 4; i++) {
-        writeDir(bestOrder[i], i);
-        
+        //writeDir(bestOrder[i], i);
+
         if (bestOrder[i] == dirs[0]) {
             checkAvailableDirections(x, y, 0);
             bestOrder[i] = dirs[0];
@@ -367,7 +394,28 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
         node = lastNode;
 
         do {
+            // check if we had all walls here
+            if (checkWalls(node->x, node->y)) {
+                targetX = node->x;
+                targetY = node->y;
+                break;
+            }
         } while (node = node->next);
+
+        setCursorPosLCD(0, 4);
+        writeCharLCD('X');
+
+        setCursorPosLCD(0, 6);
+        writeIntegerLCD(node->x, DEC);
+
+        setCursorPosLCD(0, 8);
+        writeCharLCD('Y');
+
+        setCursorPosLCD(0, 10);
+        writeIntegerLCD(node->y, DEC);
+
+        mSleep(300);
+        return pathfinder_NextStep(x, y, currentDirection);
     } else if (hal_hasWallFront()) {
         // if all else fails.....
         return turnRight(currentDirection);
@@ -386,6 +434,9 @@ void pathfinder_setTarget(uint8_t x, uint8_t y)
 
     targetX = x;
     targetY = y;
+
+    // free LOTS of memory if needed
+    //struct listNode *node;
 }
 
 /*
