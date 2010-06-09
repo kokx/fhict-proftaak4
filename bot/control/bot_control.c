@@ -219,7 +219,7 @@ int main(void)
 	// initialize components
 	hal_init(x, y);
 	pathfinder_init(x, y, currentDirection); // X, Y, Direction
-	// ir_init();
+	ir_init();
     
     pathfinder_setTarget(targetX, targetY);
 

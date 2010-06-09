@@ -20,5 +20,6 @@
     /* Includes */
 
     /* Function prototypes */
+	void ir_init(void);
 
 #endif
