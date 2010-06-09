@@ -191,10 +191,12 @@ void hal_scan(void)
 #endif
     wallFront = (obstacle_left && obstacle_right);
     
+#if 0
     if (wallFront) {
         setCursorPosLCD(1, 12);
         writeCharLCD('F');
     }
+#endif
 }
 
 void hal_init(uint8_t x, uint8_t y)

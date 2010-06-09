@@ -121,10 +121,10 @@ static void turnTo(direction dir)
                     hal_turnLeft();
                     break;
                 case WEST:
-                    hal_turnLeft();
+                    hal_turnRight();
                     break;
                 case EAST:
-                    hal_turnRight();
+                    hal_turnLeft();
                     break;
             }
             break;
@@ -135,10 +135,10 @@ static void turnTo(direction dir)
                     hal_turnLeft();
                     break;
                 case SOUTH:
-                    hal_turnLeft();
+                    hal_turnRight();
                     break;
                 case NORTH:
-                    hal_turnRight();
+                    hal_turnLeft();
                     break;
             }
             break;
@@ -149,10 +149,10 @@ static void turnTo(direction dir)
                     hal_turnLeft();
                     break;
                 case EAST:
-                    hal_turnLeft();
+                    hal_turnRight();
                     break;
                 case WEST:
-                    hal_turnRight();
+                    hal_turnLeft();
                     break;
             }
             break;
@@ -163,10 +163,10 @@ static void turnTo(direction dir)
                     hal_turnLeft();
                     break;
                 case NORTH:
-                    hal_turnLeft();
+                    hal_turnRight();
                     break;
                 case SOUTH:
-                    hal_turnRight();
+                    hal_turnLeft();
                     break;
             }
             break;
@@ -176,7 +176,7 @@ static void turnTo(direction dir)
 // temp function
 static void writeDir(direction dir)
 {
-    setCursorPosLCD(0, 5);
+    setCursorPosLCD(0, 2);
 
     switch (dir) {
         case NORTH:
@@ -210,11 +210,11 @@ int main(void)
 
     // initialization of variables, will later happen with IR
     direction dir = NONE;
-    uint8_t x = 6;
-    uint8_t y = 8;
+    uint8_t x = 4;
+    uint8_t y = 1;
 
-    uint8_t targetX = 0;
-    uint8_t targetY = 8;
+    uint8_t targetX = 4;
+    uint8_t targetY = 7;
 
 	// initialize components
 	hal_init(x, y);
@@ -248,10 +248,6 @@ int main(void)
                 y = hal_getY();
 
                 // show the X and Y pos on the screen
-                setCursorPosLCD(0, 9);
-                writeIntegerLCD(x, DEC);
-                setCursorPosLCD(0, 12);
-                writeIntegerLCD(y, DEC);
                 break;
             case STATE_FINDPATH:
                 setCursorPosLCD(0, 0);
@@ -259,7 +255,7 @@ int main(void)
 
                 dir = pathfinder_NextStep(currentDirection, x, y);
 
-                //writeDir(dir);
+                writeDir(dir);
                 mSleep(500);
 
                 state = STATE_MOVE;
