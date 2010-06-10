@@ -26,6 +26,7 @@
 #define STATE_RECEIVE   1
 #define STATE_MOVE      2
 #define STATE_FINDPATH  3
+#define STATE_END       4
 
 uint8_t state;
 
@@ -120,10 +121,10 @@ static void turnTo(direction dir)
                     hal_turnLeft();
                     break;
                 case WEST:
-                    hal_turnLeft();
+                    hal_turnRight();
                     break;
                 case EAST:
-                    hal_turnRight();
+                    hal_turnLeft();
                     break;
             }
             break;
@@ -134,10 +135,10 @@ static void turnTo(direction dir)
                     hal_turnLeft();
                     break;
                 case SOUTH:
-                    hal_turnLeft();
+                    hal_turnRight();
                     break;
                 case NORTH:
-                    hal_turnRight();
+                    hal_turnLeft();
                     break;
             }
             break;
@@ -148,10 +149,10 @@ static void turnTo(direction dir)
                     hal_turnLeft();
                     break;
                 case EAST:
-                    hal_turnLeft();
+                    hal_turnRight();
                     break;
                 case WEST:
-                    hal_turnRight();
+                    hal_turnLeft();
                     break;
             }
             break;
@@ -162,10 +163,10 @@ static void turnTo(direction dir)
                     hal_turnLeft();
                     break;
                 case NORTH:
-                    hal_turnLeft();
+                    hal_turnRight();
                     break;
                 case SOUTH:
-                    hal_turnRight();
+                    hal_turnLeft();
                     break;
             }
             break;
@@ -175,7 +176,7 @@ static void turnTo(direction dir)
 // temp function
 static void writeDir(direction dir)
 {
-    setCursorPosLCD(0, 5);
+    setCursorPosLCD(0, 2);
 
     switch (dir) {
         case NORTH:
@@ -190,6 +191,9 @@ static void writeDir(direction dir)
         case EAST:
             writeCharLCD('E');
             break;
+        default:
+            writeIntegerLCD(dir, DEC);
+            break;
     }
 }
 
@@ -202,23 +206,22 @@ int main(void)
 
     welcome();
 
-    currentDirection = NORTH;
-	
-    // initialization of variables, will later happen with IR
-    direction dir = NORTH;
-    uint8_t x = 6;
-    uint8_t y = 8;
+    currentDirection = hal_direction();
 
-    uint8_t targetX = 2;
-    uint8_t targetY = 4;
+    // initialization of variables, will later happen with IR
+    direction dir = NONE;
+    uint8_t x = 4;
+    uint8_t y = 1;
+
+    uint8_t targetX = 4;
+    uint8_t targetY = 7;
 
 	// initialize components
 	hal_init(x, y);
 	pathfinder_init(x, y, currentDirection); // X, Y, Direction
-	// ir_init();
+	ir_init();
     
     pathfinder_setTarget(targetX, targetY);
-
 
     state = STATE_RECEIVE;
 
@@ -238,12 +241,19 @@ int main(void)
 
                 hal_scan();
                 state = STATE_FINDPATH;
+                currentDirection = hal_direction();
+
+                // get X and Y pos
+                x = hal_getX();
+                y = hal_getY();
+
+                // show the X and Y pos on the screen
                 break;
             case STATE_FINDPATH:
                 setCursorPosLCD(0, 0);
                 writeCharLCD('F');
 
-                dir = pathfinder_NextStep(NORTH, x, y);
+                dir = pathfinder_NextStep(currentDirection, x, y);
 
                 writeDir(dir);
                 mSleep(500);
@@ -254,14 +264,26 @@ int main(void)
                 setCursorPosLCD(0, 0);
                 writeCharLCD('M');
 
+                if ((dir == NONE) && (targetX == hal_getX()) && (targetY == hal_getY())) {
+                    state = STATE_END;
+                    break;
+                }
                 turnTo(dir);
                 hal_moveForward();
 
                 state = STATE_RECEIVE;
                 break;
         }
+        if (state == STATE_END) {
+            break;
+        }
 	}
+
+	showScreenLCD("Achievement", "Unlocked!!!");
+
+    while (1) {
+        mSleep(60000);
+    }
 
 	return 0;
 }
-

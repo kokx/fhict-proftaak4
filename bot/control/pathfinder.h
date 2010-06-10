@@ -16,14 +16,21 @@
 	#include "hal.h"
 
     /* Structures */
-    struct node {
+    struct listNode {
         uint8_t x;
         uint8_t y;
-        struct node *north;
-        struct node *west;
-        struct node *south;
-        struct node *east;
+        struct listNode *next;
     };
+
+    /* Defines */
+    #define PATH_NORTH  (1 << 0)
+    #define PATH_WEST   (1 << 1)
+    #define PATH_SOUTH  (1 << 2)
+    #define PATH_EAST   (1 << 3)
+    #define WALL_NORTH  (1 << 4)
+    #define WALL_WEST   (1 << 5)
+    #define WALL_SOUTH  (1 << 6)
+    #define WALL_EAST   (1 << 7)
     // by default, all directions point to a node with x = 255 and y = 255, A.K.A. "The empty node"
 
     /* Function prototypes */
