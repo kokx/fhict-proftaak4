@@ -240,7 +240,7 @@ static void saveWall(uint8_t x, uint8_t y, direction dir)
 }
 
 // temp debug function
-static printLinkedList()
+static void printLinkedList(void)
 {
     struct listNode *node;
 
@@ -315,6 +315,7 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
     uint8_t diffX = abs(x - targetX);
     uint8_t diffY = abs(y - targetY);
 
+#if 0
     setCursorPosLCD(0, 13);
     writeCharLCD('X');
     setCursorPosLCD(1, 13);
@@ -324,6 +325,7 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
     writeIntegerLCD(x, DEC);
     setCursorPosLCD(1, 15);
     writeIntegerLCD(y, DEC);
+#endif
 
     // get the best order of directions
     direction bestOrder[4];
@@ -415,12 +417,23 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
         writeIntegerLCD(node->y, DEC);
 
         mSleep(300);
-        return pathfinder_NextStep(x, y, currentDirection);
+        showScreenLCD("Piratenpartij", "Remix politiek");
+        mSleep(1000);
+        direction dir = pathfinder_NextStep(currentDirection, x, y);
+
+        clearLCD();
+        writeDir(dir, 0);
+
+        return dir;
     } else if (hal_hasWallFront()) {
         // if all else fails.....
+        showScreenLCD("Samir For", "President");
+        mSleep(1000);
         return turnRight(currentDirection);
     }
 
+    showScreenLCD("ShitHead", "BlaBla");
+    mSleep(1000);
     return currentDirection;
 }
 

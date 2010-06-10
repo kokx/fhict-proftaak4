@@ -208,18 +208,28 @@ int main(void)
 
     currentDirection = hal_direction();
 
-    // initialization of variables, will later happen with IR
-    direction dir = NONE;
-    uint8_t x = 4;
-    uint8_t y = 1;
+    // first initialize the IR
+    //ir_init();
 
-    uint8_t targetX = 4;
-    uint8_t targetY = 7;
+    // now ask for coords 'n stuff from the IR
+    //ir_receiveBaseStation();
+
+    // initialization of variables
+    // TODO: let this later happen with IR
+    direction dir = NONE;
+    //uint8_t x = ir_getStartX();
+    //uint8_t y = ir_getStartY();
+    uint8_t x = 4;
+    uint8_t y = 6;
+
+    //uint8_t targetX = ir_getTargetX();
+    //uint8_t targetY = ir_getTargetY();
+    uint8_t targetX = 6;
+    uint8_t targetY = 8;
 
 	// initialize components
 	hal_init(x, y);
 	pathfinder_init(x, y, currentDirection); // X, Y, Direction
-	ir_init();
     
     pathfinder_setTarget(targetX, targetY);
 
