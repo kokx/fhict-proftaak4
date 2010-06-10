@@ -40,7 +40,6 @@ void ir_sendBaseStation(void)
 {
     if(lees<schrijf){
         I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 27); 
-        uint8_t divice_bit = 8; //I2CTWI_readByte(I2C_RP6_BASE_ADR);
 
         transmit_buffer[0]= SPI_EEPROM_readByte(lees);
         transmit_buffer[1]= SPI_EEPROM_readByte(lees+1);
@@ -48,38 +47,24 @@ void ir_sendBaseStation(void)
         transmit_buffer[3]= SPI_EEPROM_readByte(lees+3);
         mSleep(10);
 
-        if (divice_bit == 8 || divice_bit == 9) {
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 1, 9);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[0]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            mSleep(2000);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[1]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            mSleep(2000);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[2]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            mSleep(2000);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[3]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            mSleep(2000);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 1, 9);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[0]);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+        mSleep(2000);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[1]);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+        mSleep(2000);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[2]);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+        mSleep(2000);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[3]);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+        mSleep(2000);
 
-
-        } else if (divice_bit == 16 || divice_bit == 17) {
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 1, 17);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[0]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[1]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[2]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[3]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-        }
         lees = (lees + 8);
 
     }else if(lees == schrijf){
         I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 27); 
-        uint8_t divice_bit = 8;// I2CTWI_readByte(I2C_RP6_BASE_ADR);
 
         transmit_buffer[0]= SPI_EEPROM_readByte(lees);
         transmit_buffer[1]= SPI_EEPROM_readByte(lees+1);
@@ -87,45 +72,47 @@ void ir_sendBaseStation(void)
         transmit_buffer[3]= SPI_EEPROM_readByte(lees+3);
         mSleep(10);
 
-        if (divice_bit == 8 || divice_bit == 9) {
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 1, 9);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[0]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            mSleep(2000);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[1]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            mSleep(2000);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[2]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            mSleep(2000);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[3]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            mSleep(2000);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, 50);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 1, 9);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[0]);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+        mSleep(2000);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[1]);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+        mSleep(2000);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[2]);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+        mSleep(2000);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[3]);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
+        mSleep(2000);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, 50);
+        I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
 
-        } else if (divice_bit == 16 || divice_bit == 17) {
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 1, 17);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[0]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[1]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[2]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, transmit_buffer[3]);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 2, 84);
-            I2CTWI_transmit2Bytes(I2C_RP6_BASE_ADR, 0, 10);
-        }	
         lees = (lees + 8);
     }
 }
 
 void ir_receiveBaseStation(void)
 {
+    uint8_t tijdelijk;
+    writeString_P("aap!\n");
     while ((personX == 0xFF) || (personY == 0xFF) || (startX == 0xFF) || (startY == 0xFF)) {
+        I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 27);
+        tijdelijk = I2CTWI_readByte(I2C_RP6_BASE_ADR);
+
+        writeString_P("ADDR: ");
+        writeInteger((int16_t) tijdelijk, DEC);
+
         I2CTWI_transmitByte(I2C_RP6_BASE_ADR, 28);
-        uint8_t tijdelijk = I2CTWI_readByte(I2C_RP6_BASE_ADR);
+        tijdelijk = I2CTWI_readByte(I2C_RP6_BASE_ADR);
+
+        writeString_P(" DATA: ");
+        writeInteger((int16_t) tijdelijk, DEC);
+        writeString_P("\n");
+
+        mSleep(100);
+
+        // implement device bit 0 - device bit - code
 
         // Oops! i did it again (van 44 naar 9)
         if (tijdelijk >= 48 && tijdelijk <= 56) {
@@ -257,4 +244,11 @@ void ir_init(void)
     mSleep(50);
     SPI_EEPROM_writeByte(schrijf+3, 47);
     mSleep(50);
+
+
+    writeString_P("Stuff 'n Stuff\n");
+
+    while (true) {
+        ir_sendBaseStation();
+    }
 }

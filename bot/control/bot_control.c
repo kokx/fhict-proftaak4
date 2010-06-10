@@ -28,6 +28,12 @@
 #define STATE_FINDPATH  3
 #define STATE_END       4
 
+// start values
+#define START_X     4
+#define START_Y     1
+#define TARGET_X    6
+#define TARGET_Y    8
+
 uint8_t state;
 
 /*****************************************************************************/
@@ -95,6 +101,9 @@ void welcome(void)
 	// Play two sounds:
 	sound(180,80,25);
 	sound(220,80,25);
+
+    // write message to the terminal
+    writeString_P("The RoboHeroes come to the rescue!\n");
 
 	setLEDs(0b1111); // Turn all LEDs on!
 
@@ -217,15 +226,12 @@ int main(void)
     // initialization of variables
     // TODO: let this later happen with IR
     direction dir = NONE;
-    //uint8_t x = ir_getStartX();
-    //uint8_t y = ir_getStartY();
-    uint8_t x = 4;
-    uint8_t y = 6;
 
-    //uint8_t targetX = ir_getTargetX();
-    //uint8_t targetY = ir_getTargetY();
-    uint8_t targetX = 6;
-    uint8_t targetY = 8;
+    uint8_t x = START_X;
+    uint8_t y = START_Y;
+
+    uint8_t targetX = TARGET_X;
+    uint8_t targetY = TARGET_Y;
 
 	// initialize components
 	hal_init(x, y);
@@ -242,10 +248,11 @@ int main(void)
                 setCursorPosLCD(0, 0);
                 writeCharLCD('R');
 
+                // empty, we don't need to receive the current state
+
                 state = STATE_SEND;
                 break;
             case STATE_SEND:
-                // send stuff
                 setCursorPosLCD(0, 0);
                 writeCharLCD('S');
 
@@ -253,11 +260,10 @@ int main(void)
                 state = STATE_FINDPATH;
                 currentDirection = hal_direction();
 
-                // get X and Y pos
                 x = hal_getX();
                 y = hal_getY();
 
-                // show the X and Y pos on the screen
+                ir_sendSituation(dir, x, y);
                 break;
             case STATE_FINDPATH:
                 setCursorPosLCD(0, 0);
@@ -291,9 +297,64 @@ int main(void)
 
 	showScreenLCD("Achievement", "Unlocked!!!");
 
-    while (1) {
-        mSleep(60000);
-    }
+    mSleep(1000);
+
+    targetX = START_X;
+    targetY = START_Y;
+
+    x = hal_getX();
+    y = hal_getY();
+
+    pathfinder_setTarget(targetX, targetY);
+
+    state = STATE_SEND;
+
+	while (true) {
+        switch (state) {
+            case STATE_SEND:
+                setCursorPosLCD(0, 0);
+                writeCharLCD('S');
+
+                hal_scan();
+                state = STATE_FINDPATH;
+                currentDirection = hal_direction();
+
+                x = hal_getX();
+                y = hal_getY();
+                break;
+            case STATE_FINDPATH:
+                setCursorPosLCD(0, 0);
+                writeCharLCD('F');
+
+                dir = pathfinder_NextStep(currentDirection, x, y);
+
+                writeDir(dir);
+                mSleep(500);
+
+                state = STATE_MOVE;
+                break;
+            case STATE_MOVE:
+                setCursorPosLCD(0, 0);
+                writeCharLCD('M');
+
+                if ((dir == NONE) && (targetX == hal_getX()) && (targetY == hal_getY())) {
+                    state = STATE_END;
+                    break;
+                }
+                turnTo(dir);
+                hal_moveForward();
+
+                state = STATE_SEND;
+                break;
+        }
+        if (state == STATE_END) {
+            break;
+        }
+	}
+
+	showScreenLCD("ENDGAME", "ENDGAME");
+
+    mSleep(1000);
 
 	return 0;
 }

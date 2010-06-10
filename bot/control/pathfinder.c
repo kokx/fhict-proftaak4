@@ -14,8 +14,11 @@ uint8_t targetY;
 uint8_t finalTargetX;
 uint8_t finalTargetY;
 
+#define MAX_X 7
+#define MAX_Y 9
+
 // map[x][y]
-uint8_t map[7][9];
+uint8_t map[MAX_X][MAX_Y];
 
 struct listNode *lastNode;
 
@@ -289,6 +292,26 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
         saveWall(x, y, turnRight(currentDirection));
     }
 
+    setCursorPosLCD(0, 13);
+    writeCharLCD('X');
+    setCursorPosLCD(1, 13);
+    writeCharLCD('Y');
+
+    setCursorPosLCD(0, 15);
+    writeIntegerLCD(x, DEC);
+    setCursorPosLCD(1, 15);
+    writeIntegerLCD(y, DEC);
+
+
+    setCursorPosLCD(1, 4);
+    writeCharLCD('X');
+    setCursorPosLCD(1, 8);
+    writeCharLCD('Y');
+
+    setCursorPosLCD(1, 6);
+    writeIntegerLCD(targetX, DEC);
+    setCursorPosLCD(1, 10);
+    writeIntegerLCD(targetY, DEC);
     // print walls config
     // printLinkedList();
 
@@ -314,18 +337,6 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
     // now we need to make a slightly more complicated decision
     uint8_t diffX = abs(x - targetX);
     uint8_t diffY = abs(y - targetY);
-
-#if 0
-    setCursorPosLCD(0, 13);
-    writeCharLCD('X');
-    setCursorPosLCD(1, 13);
-    writeCharLCD('Y');
-
-    setCursorPosLCD(0, 15);
-    writeIntegerLCD(x, DEC);
-    setCursorPosLCD(1, 15);
-    writeIntegerLCD(y, DEC);
-#endif
 
     // get the best order of directions
     direction bestOrder[4];
@@ -404,6 +415,8 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
             }
         } while (node = node->next);
 
+        clearLCD();
+
         setCursorPosLCD(0, 4);
         writeCharLCD('X');
 
@@ -416,7 +429,7 @@ direction pathfinder_NextStep(direction currentDirection, uint8_t x, uint8_t y)
         setCursorPosLCD(0, 10);
         writeIntegerLCD(node->y, DEC);
 
-        mSleep(300);
+        mSleep(1000);
         showScreenLCD("Piratenpartij", "Remix politiek");
         mSleep(1000);
         direction dir = pathfinder_NextStep(currentDirection, x, y);
@@ -450,6 +463,35 @@ void pathfinder_setTarget(uint8_t x, uint8_t y)
 
     // free LOTS of memory if needed
     //struct listNode *node;
+
+    struct listNode *next;
+    struct listNode *node;
+
+    node = lastNode;
+
+    lastNode = NULL;
+
+    while (next = node->next)
+    {
+        free(node);
+        node = next;
+    }
+
+    free(node);
+
+    // also, reset the entire map
+    for (int i = 0; i < MAX_X; i++) {
+        for (int ii = 0; ii < MAX_Y; ii++) {
+            map[i][ii] = 0;
+        }
+    }
+
+    lastNode = malloc(sizeof(struct listNode));
+
+    lastNode->x = 0xFF;
+    lastNode->y = 0xFF;
+
+    lastNode->next = NULL;
 }
 
 /*
@@ -457,10 +499,4 @@ void pathfinder_setTarget(uint8_t x, uint8_t y)
  */
 void pathfinder_init(uint8_t x, uint8_t y, direction currentDirection)
 {
-    lastNode = malloc(sizeof(struct listNode));
-
-    lastNode->x = x;
-    lastNode->y = y;
-
-    lastNode->next = NULL;
 }
